@@ -78,7 +78,7 @@ def print_report(filename, results, deep_result=None):
     print(f"\n{BLUE}Target:{RESET} {filename}")
     
     if not results:
-        print(f"{GREEN}✔ No obvious slop detected.{RESET}")
+        print(f"{GREEN}[OK] No obvious slop detected.{RESET}")
     else:
         for r in results:
             print(f"  {RED}Line {r['line']}:{RESET} {r['reason']}")
@@ -92,6 +92,15 @@ def print_report(filename, results, deep_result=None):
     return score
 
 def main():
+    # Handle terminal encoding for Windows
+    if sys.stdout.encoding.lower() != 'utf-8':
+        try:
+            import codecs
+            sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+            sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+        except:
+            pass
+
     parser = argparse.ArgumentParser(description="garbage-fantasy: The AI slop linter.")
     parser.add_argument("path", nargs="?", help="File path or glob pattern")
     parser.add_argument("--diff", action="store_true", help="Lint from git diff stdin")
